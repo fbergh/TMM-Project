@@ -16,7 +16,7 @@ def get_hashtags_pattern():
     return re.compile(r'#\w*')
 
 def get_single_letter_words_pattern():
-    return re.compile(r'(?<![\w\-])\w(?![\w\-])|[…’]')
+    return re.compile(r'(?<![\w\-])\w(?![\w\-])|[…’‘]')
 
 def get_mentions_pattern():
     return re.compile(r'@\w*')

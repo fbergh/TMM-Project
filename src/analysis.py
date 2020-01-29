@@ -39,6 +39,7 @@ def plot_sentiment(sentiment, is_show=False, is_save=True, filename="", title=""
         plt.savefig(filename, bbox_inches="tight")
     if is_show:
         plt.show()
+    plt.clf()
 
 def compute_frequency_distribution(dataframe, target_col, top_k=20, is_bigram=False):
     freq_dist = nltk.FreqDist()
@@ -84,14 +85,10 @@ def main():
                    title="Histogram of sentiment for tweets after 14/10/2017")
 
     ### PERIOD 3 ###
-    # Clean text for word counts by removing "my son"-meme, punctuation, and stopwords
-    tweets_p3 = tweets_p3[~tweets_p3["processed_text"].str.contains(r'be\smy\sson')]
-    tweets_p3["clean_text"] = tweets_p3["processed_text"].apply(tpp.remove_punctuation).apply(tpp.remove_stopwords)
+    print(compute_hashtag_frequency_distribution(tweets_p3["hashtags_lower"]))
 
-    # Plot sentiment after removing meme
-    tweets_p3["sentiment"] = tweets_p3["processed_text"].apply(compute_sentiment)
-    plot_sentiment(tweets_p3["sentiment"], filename=IMG_PATH+"p3_sentiment_wo_meme.png",
-                   title="Histogram of sentiment for tweets after 14/10/2017 without the my son meme")
+    # Clean text for word counts by removing "my son"-meme, punctuation, and stopwords
+    tweets_p3["clean_text"] = tweets_p3["processed_text"].apply(tpp.remove_punctuation).apply(tpp.remove_stopwords)
 
     # Compute and display uni- and bigram distributions
     unigrams_top_k, _ = compute_frequency_distribution(tweets_p3, "clean_text")
@@ -100,11 +97,18 @@ def main():
     print(bigrams_top_k)
 
     # Specifically investigate specific words for co-occurence
-    target_words = ["man", "men", "woman", "women", "feminists", "story", "assault", "sex", "harassment", "movement",
-                    "abuse", "victims", "rape", "climate", "solo", "son", "kavanaugh"]
+    target_words = ["man", "men", "woman", "women", "story", "assault", "sex", "harassment", "movement",
+                    "abuse", "victims", "rape", "climate", "son", "kavanaugh", "feminists"]
     for target in target_words:
         threshold = 50  # if target not in ["men","women"] else 75
         print("{:15} {}".format(target, cooccuring_words(bigram_dist, target, threshold)))
+
+    # Plot sentiment after removing meme
+    tweets_p3 = tweets_p3[~tweets_p3["processed_text"].str.contains(r'be\smy\sson')]
+    tweets_p3["sentiment"] = tweets_p3["processed_text"].apply(compute_sentiment)
+    plot_sentiment(tweets_p3["sentiment"], filename = IMG_PATH + "p3_sentiment_wo_meme.png",
+                   title = "Histogram of sentiment for tweets after 14/10/2017 without the my son meme")
+
 
 if __name__ == '__main__':
     main()

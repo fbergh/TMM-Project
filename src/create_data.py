@@ -24,9 +24,7 @@ def load_all_tweets():
     # Then sort by (reformatted) date and reset index and save as new file
     tweets_all = tweets_0.append(tweets_1, ignore_index=True).append(tweets_2, ignore_index=True)\
                          .append(tweets_3, ignore_index=True)
-    print(tweets_all.head().to_string())
     tweets_all = tweets_all.drop(["geo","mentions","username","permalink","id"], axis=1)
-    print(tweets_all.head().to_string())
     # Remove hours and minutes and reformat date
     tweets_all["date"] = tweets_all["date"].apply(lambda s: s[:10])#.apply(dateToISO8601)
     tweets_all.sort_values(by=["date"], inplace=True)
@@ -60,12 +58,12 @@ def main():
     tweets_period1.to_csv(DATA_PATH+"tweets_period1.csv", sep=delim)
     print(tweets_period1.head(), tweets_period1.shape)
     # 2016 - 14/10/17
-    tweets_period2 = tweets_all.loc[(tweets_all['date'] < "2017/10/14")
+    tweets_period2 = tweets_all.loc[(tweets_all['date'] < "2017-10-14")
                                         & (tweets_all['date'] > "2016")]
     tweets_period2.to_csv(DATA_PATH+"tweets_period2.csv", sep=delim)
     print(tweets_period2.head(), tweets_period2.shape)
     # 15/10/17 - 31/11/19
-    tweets_period3 = tweets_all.loc[tweets_all['date'] > "2017/10/14"]
+    tweets_period3 = tweets_all.loc[tweets_all['date'] > "2017-10-14"]
     tweets_period3.to_csv(DATA_PATH+"tweets_period3.csv", sep=delim)
     print(tweets_period3.head(), tweets_period3.shape)
 
